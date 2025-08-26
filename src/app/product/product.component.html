@@ -1,0 +1,164 @@
+<div class="header ">
+    <button class="btn text-white bg-info fw-bold" data-bs-toggle="modal" data-bs-target="#addproduct"><span><i
+                class="bi bi-plus"></i></span>Add</button>
+    <button class="btn text-white bg-primary fw-bold" data-bs-toggle="modal" data-bs-target="#editmodel" (click)="Editdata()"><span class="px-1"><i
+                class="bi bi-pencil-square" ></i></span>Edit</button>
+    <button class="bg-warning btn text-white fw-bold" data-bs-toggle="modal" data-bs-target="#updatemodel" (click)="Editdata()"><span class="px-1"><i
+                class="bi bi-box-arrow-up-left"></i></span>Update</button>
+    <button class="btn text-white bg-danger fw-bold" (click)="delete()"><span><i class="bi bi-x"></i></span>Delete</button>
+    <button class="btn bg-success" (click)="show()">Empty</button>
+</div>
+<section class="mt-4">
+    <div class="card">
+        <div class="table-responsive">
+
+            <table>
+
+                <thead>
+                    <tr style="background-color: coral;">
+                        <th style="text-align: center;">
+                            <input type="checkbox" name="checkbox" id="checkbox" [(ngModel)]="selectedAll"
+                                (ngModelChange)="CheckboxChange()">
+                        </th>
+                        <th class="text-white">Id</th>
+                        <th class="text-white">Name</th>
+                        <th class="text-white">Description</th>
+                        <th class="text-white">Price</th>
+                        <th class="text-white">Images</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    <tr *ngFor="let v of storeproduct">
+                        <td style="text-align: center;">
+                            <input type="checkbox" name="" id="" [(ngModel)]="v.selected" (change)="change(v)">
+                        </td>
+                        <td>{{v._id}}</td>
+                        <td>{{v.name}}</td>
+                        <td>{{v.description}}</td>
+                        <td>{{v.price}}</td>
+                        <td>{{v.images}}</td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</section>
+
+
+<!-- !----!Add Modals----! -->
+
+<div class="modal fade" id="addproduct" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div style="background-color: palevioletred;padding:10px 10px;text-align: center;" class="w-100 ">
+                    <h2>Add Product List</h2>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <form [formGroup]="addproductform">
+                        <div class="col-lg-8 mb-3">
+                            <label for="name" class="mb-2 form-label fw-bold">Enter product name:</label>
+                            <input type="text" name="product" id="name" formControlName="name" class="form-control">
+                        </div>
+                        <div class="col-lg-8 mb-3">
+                            <label for="des" class="mb-2 form-label fw-bold">Enter Descriptions:</label>
+                            <input type="text" name="des" id="des" formControlName="description" class="form-control">
+                        </div>
+                        <div class="col-lg-8 mb-3">
+                            <label for="price" class="mb-2 form-label fw-bold">Enter price:</label>
+                            <input type="text" name="price" id="price" formControlName="price" class="form-control">
+                        </div>
+                        <div class="col-lg-8 mb-3">
+                            <label for="filesup" class="mb-2 form-label fw-bold">Enter File/image:</label>
+                            <input type="file" name="images" id="filesup" formControlName="images" class="form-control">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary text-black" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary text-black" (click)="sendpostadd()">Save </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- !-----edit modals----! -->
+<div class="modal fade" id="editmodel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Edit Data</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="r()"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="addproductform">
+                        <div class="col-lg-8 mb-3">
+                            <label for="name" class="mb-2 form-label fw-bold">Enter product name:</label>
+                            <input type="text" name="product" id="name" formControlName="name" class="form-control" readonly style="background-color: darksalmon;">
+                        </div>
+                        <div class="col-lg-8 mb-3">
+                            <label for="des" class="mb-2 form-label fw-bold">Enter Descriptions:</label>
+                            <input type="text" name="des" id="des" formControlName="description" class="form-control" readonly style="background-color: darksalmon;">
+                        </div>
+                        <div class="col-lg-8 mb-3">
+                            <label for="price" class="mb-2 form-label fw-bold">Enter price:</label>
+                            <input type="text" name="price" id="price" formControlName="price" class="form-control" readonly style="background-color: darksalmon;">
+                        </div>
+                        <div class="col-lg-8 mb-3">
+                            <label for="filesup" class="mb-2 form-label fw-bold">Enter File/image:</label>
+                            <input type="file" name="images" id="filesup" formControlName="images" class="form-control" readonly style="background-color: darksalmon;">
+                        </div>
+                    </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary text-black" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary text-black">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- !-----!update------! -->
+
+<div class="modal fade" id="updatemodel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Update Data</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="r()"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="addproductform">
+                        <div class="col-lg-8 mb-3">
+                            <label for="name" class="mb-2 form-label fw-bold">Enter product name:</label>
+                            <input type="text" name="product" id="name" formControlName="name" class="form-control" >
+                        </div>
+                        <div class="col-lg-8 mb-3">
+                            <label for="des" class="mb-2 form-label fw-bold">Enter Descriptions:</label>
+                            <input type="text" name="des" id="des" formControlName="description" class="form-control" >
+                        </div>
+                        <div class="col-lg-8 mb-3">
+                            <label for="price" class="mb-2 form-label fw-bold">Enter price:</label>
+                            <input type="text" name="price" id="price" formControlName="price" class="form-control" >
+                        </div>
+                        <div class="col-lg-8 mb-3">
+                            <label for="filesup" class="mb-2 form-label fw-bold">Enter File/image:</label>
+                            <input type="file" name="images" id="filesup" formControlName="images" class="form-control" >
+                        </div>
+                    </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary text-black" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary text-black" (click)="Update()">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,14 @@
+.header{
+    padding: 20px 20px ;
+}
+.btn{
+    margin-left: 50px;
+    margin-right: 50px;
+    background-color: azure;
+}
+th{
+    padding: 15px 15px;
+}
+td{
+    padding: 10px 10px;
+}

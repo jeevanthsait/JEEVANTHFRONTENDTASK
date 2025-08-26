@@ -1,0 +1,22 @@
+.main{
+ background-image: url("/assets/b1.jpg");
+ background-size: cover;
+ background-position: center;
+ background-repeat: no-repeat;
+ height: 100vh;
+ width: 100%;
+ justify-content: center;
+ display:flex;
+ align-items: center;
+}
+.sub{
+    width: 400px;
+    height: 65vh;
+    border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.header{
+    display: flex;
+    justify-content: center;
+    padding: 10px 10px ;
+}
