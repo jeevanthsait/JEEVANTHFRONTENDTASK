@@ -7,11 +7,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ProductComponent } from './product/product.component';
-import { HomeComponent } from './home/home.component';
+
 import { RouterModule } from '@angular/router';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { HomeComponent } from './home/home.component';
+import { AboutComponent } from './about/about.component';
 
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -22,7 +24,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     AppComponent,
     LoginComponent,
     ProductComponent,
-    HomeComponent
+  
+    HomeComponent,
+       AboutComponent
   ],
   imports: [
     BrowserModule,

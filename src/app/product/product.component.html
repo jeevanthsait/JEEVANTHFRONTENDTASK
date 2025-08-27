@@ -1,24 +1,56 @@
-<div class="header ">
-    <button class="btn text-white bg-info fw-bold" data-bs-toggle="modal" data-bs-target="#addproduct"><span><i
-                class="bi bi-plus"></i></span>Add</button>
-    <button class="btn text-white bg-primary fw-bold" data-bs-toggle="modal" data-bs-target="#editmodel"
-        (click)="Editdata()"><span class="px-1"><i class="bi bi-pencil-square"></i></span>Edit</button>
-    <button class="bg-warning btn text-white fw-bold" data-bs-toggle="modal" data-bs-target="#updatemodel"
-        (click)="Editdata()"><span class="px-1"><i class="bi bi-box-arrow-up-left"></i></span>Update</button>
-    <button class="btn text-white bg-danger fw-bold" (click)="delete()"><span><i
-                class="bi bi-x"></i></span>Delete</button>
-    <button class="btn bg-success" (click)="show()">Empty</button>
-</div>
-<section class="mt-4">
-    <div class="card">
-        <div class="table-responsive">
-            <table>
+<div class="header d-flex align-items-center justify-content-between  bg-light">
+  
+  <!-- Left buttons -->
+  <div class="button-group d-flex gap-2">
+    <button class="btn text-white bg-info fw-bold" data-bs-toggle="modal" data-bs-target="#addproduct">
+      <i class="bi bi-plus"></i> Add
+    </button>
+    <button class="btn text-white bg-primary fw-bold" data-bs-toggle="modal" data-bs-target="#editmodel" (click)="Editdata()">
+      <i class="bi bi-eye"></i> View
+    </button>
+    <button class="btn text-white bg-warning fw-bold" data-bs-toggle="modal" data-bs-target="#updatemodel" (click)="Editdata()">
+      <i class="bi bi-pencil-square"></i> Edit
+    </button>
+    <button class="btn text-white bg-danger fw-bold" (click)="delete()">
+      <i class="bi bi-x"></i> Delete
+    </button>
+  </div>
 
+  <!-- Search bar -->
+  <div class="search-bar flex-grow-1 mx-3">
+    <form class="d-flex" role="search" (submit)="$event.preventDefault()">
+        <input class="form-control me-2" type="search" placeholder="Search" [formControl]="searchControl" />
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+  </div> 
+
+
+</div>
+<!-- -------!----- -->
+
+<div class="filter-sections card d-flex flex-row">
+  <div class="col-lg-3">
+     <label for="name" class="form-label  fw-bold">Name</label>
+     <input type="text" name="name" id="name" class="form-control" [formControl]="nameFilter">
+  </div>
+  <div class="col-lg-3">
+     <label for="des" class="form-label fw-bold">Descriptions</label>
+     <input type="text" name="des" id="des" class="form-control" [formControl]="descriptionFilter">
+  </div>
+   <div class="col-lg-3">
+     <label for="price" class="form-label fw-bold">price</label>
+     <input type="text" name="price" id="price" class="form-control" [formControl]="priceFilter">
+  </div>
+</div>
+<section class="section-one mt-4 ">
+    <div class="card" id="tc">
+        <div class="table-responsive "  style="width: 100%;">
+            <table class="w-100">
                 <thead>
                     <tr style="background-color: coral;">
                         <th style="text-align: center;">
                             <input type="checkbox" name="checkbox" id="checkbox" [(ngModel)]="selectedAll"
-                                (ngModelChange)="CheckboxChange()">
+                            (ngModelChange)="CheckboxChange()">
                         </th>
                         <th class="text-white">Id</th>
                         <th class="text-white">Name</th>
@@ -29,7 +61,7 @@
 
                 </thead>
                 <tbody>
-                    <tr *ngFor="let v of storeproduct">
+                    <tr *ngFor="let v of filteredProducts">
                         <td style="text-align: center;">
                             <input type="checkbox" name="" id="" [(ngModel)]="v.selected" (change)="change(v)">
                         </td>
@@ -37,7 +69,10 @@
                         <td>{{v.name}}</td>
                         <td>{{v.description}}</td>
                         <td>{{v.price}}</td>
-                        <td>{{v.images}}</td>
+                        <td>
+                            <img *ngFor="let img of v.images" [src]="img" width="100" height="100"
+                                style="margin:5px;" />
+                        </td>
                     </tr>
                 </tbody>
 
@@ -76,7 +111,8 @@
                         </div>
                         <div class="col-lg-8 mb-3">
                             <label for="filesup" class="mb-2 form-label fw-bold">Enter File/image:</label>
-                            <input type="file" name="images" id="filesup" formControlName="images" class="form-control">
+                            <input type="file" id="filesup" (change)=" onFileSelected($event)" multiple
+                                class="form-control" />
                         </div>
                     </form>
                 </div>
@@ -116,11 +152,17 @@
                         <input type="text" name="price" id="price" formControlName="price" class="form-control" readonly
                             style="background-color: darksalmon;">
                     </div>
-                    <div class="col-lg-8 mb-3">
+                    <!-- <div class="col-lg-8 mb-3">
                         <label for="filesup" class="mb-2 form-label fw-bold">Enter File/image:</label>
                         <input type="file" name="images" id="filesup" formControlName="images" class="form-control"
                             readonly style="background-color: darksalmon;">
+                    </div> -->
+
+                    <div *ngIf="existingImages">
+                        <p>Existing Images:</p>
+                        <img *ngFor="let img of existingImages" [src]="img" width="100" height="100">
                     </div>
+
                 </form>
             </div>
             <div class="modal-footer">
@@ -158,8 +200,14 @@
                     </div>
                     <div class="col-lg-8 mb-3">
                         <label for="filesup" class="mb-2 form-label fw-bold">Enter File/image:</label>
-                        <input type="file" name="images" id="filesup" formControlName="images" class="form-control">
+                        <input type="file" name="images" id="filesup"  (change)=" onFileSelected($event)" multiple class="form-control">
                     </div>
+                    <div *ngIf="existingImages">
+                        <p>Existing Images:</p>
+                        <img *ngFor="let img of existingImages" [src]="img" width="100" height="100">
+                    </div>
+
+                    
                 </form>
             </div>
             <div class="modal-footer">

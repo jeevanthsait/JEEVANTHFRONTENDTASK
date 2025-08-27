@@ -1,0 +1,63 @@
+img{
+    width: 340px;
+}
+.navbar{
+    padding: 20px 20px;
+    background-attachment: fixed;
+    background-color: azure;
+}
+.content-one{
+    background-image: url("src/assets/back.jpg");
+    width: 100%;
+    height: 100vh;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.col-lg-6{
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    height: 70vh;
+}
+h1{
+    font-size:55px
+}
+
+.user-dropdown {
+  position: relative;
+  cursor: pointer;
+}
+
+.user-dropdown .user-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.user-dropdown .dropdown-menu {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  display: none;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  border-radius: 5px;
+  z-index: 1000;
+}
+
+.user-dropdown .dropdown-menu a {
+  text-decoration: none;
+  color: #333;
+  padding: 5px 10px;
+  display: block;
+}
+
+.user-dropdown .dropdown-menu a:hover {
+  background-color: #f1f1f1;
+}
+
+
+.user-dropdown.active .dropdown-menu {
+  display: block;
+}

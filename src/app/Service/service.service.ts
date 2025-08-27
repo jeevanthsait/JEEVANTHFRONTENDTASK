@@ -19,7 +19,7 @@ export class ServiceService {
    postreqlogin(data:any):Observable<any>
    {
     
-    console.log("login data👍:",data);
+    console.log("login data:",data);
     return this.http.post(this.loginurl,data);
    }
 
@@ -41,7 +41,12 @@ export class ServiceService {
 
    updatesingledata(id: string, formData: FormData)
    {
-    return this.http.get(`${this.prourl}/${id}`)
+    return this.http.put(`${this.prourl}/${id}`,formData);
    }
+   sendMail(data: any) 
+   {
+    console.log("Services email check data:",data)
+   return this.http.post('http://localhost:3000/api/mail/send', data);
+  }
 
 }

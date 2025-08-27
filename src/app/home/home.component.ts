@@ -1,19 +1,22 @@
-import { Component } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent {
-constructor(private translate: TranslateService) {
-  translate.addLangs(['en', 'fr','hi']); 
-  translate.use('en');              
-}
+export class HomeComponent  implements OnInit{
 
-  switchLanguage(lang: string) {
-    this.translate.use(lang); 
+  
+  ngOnInit(): void {
+    
+  }
+
+  toggleDropdown() {
+  const dropdown = document.getElementById('c');
+  if(dropdown) {
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
   }
 }
-  
+
+}
