@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
   }
   getdata()
 {
-  console.log("Responces❤️:",this.userdata.value);
+  console.log("Responces:",this.userdata.value);
   this.storelogindata=this.userdata.value;
   this.service.postreqlogin(this.storelogindata).subscribe((res:any)=>
   {
@@ -46,17 +46,18 @@ export class LoginComponent implements OnInit {
       localStorage.setItem('authToken', token);
     }
     console.log("Succesfully Login...!",res);
+    
     this.router.navigate(['/product']);
   });
 }
 
 getdatareg()
 {
-  console.log("Responces2😍:",this.register.value);
+  console.log("Responces2:",this.register.value);
   this.storedata=this.register.value;
   this.service.postrequest(this.storedata).subscribe((res:any)=>
   {
-      console.log("Successfully Registered...!❤️",res);
+      console.log("Successfully Registered...!",res);
   })
   
 }

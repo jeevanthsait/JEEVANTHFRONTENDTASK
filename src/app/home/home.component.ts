@@ -16,3 +16,4 @@ constructor(private translate: TranslateService) {
     this.translate.use(lang); 
   }
 }
+  
