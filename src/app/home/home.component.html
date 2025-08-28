@@ -1,9 +1,10 @@
-   <nav class="navbar navbar-expand-lg  ">
+<nav class="navbar navbar-expand-lg  ">
   <div class="container-fluid">
-  <div >
-    <img src="assets/logo.png" alt="">
-  </div>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <div>
+      <img src="assets/logo.png" alt="">
+    </div>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -22,29 +23,28 @@
         </li>
       </ul>
       <form class="d-flex " role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
-     <div class="user-dropdown position-relative">
-    <img src="assets/user1.png" alt="User" class="user-img" (click)="toggleDropdown()" />
-    <div class="dropdown-menu p-2" id="c">
-        <a href="login" class="d-block">Login</a>
-        <a href="" class="d-block">Logout</a>
-    </div>
-  </div>
+      <div class="user-dropdown position-relative">
+        <img src="assets/user1.png" alt="User" class="user-img" tabindex="0" (click)="toggleDropdown()"
+          (keydown)="onKeydown($event)" />
+
+        <div class="dropdown-menu p-2" id="c">
+          <a href="login" class="d-block">Login</a>
+          <a href="" class="d-block">Logout</a>
+        </div>
+      </div>
     </div>
   </div>
 </nav>
 
 <section class="content-one">
-   <div class="col-lg-6 ">
+  <div class="col-lg-6 ">
     <div class="sub-content text-white  mx-5">
-     <h1>Supporting Hands</h1>
-   <h1>When ever you are in need</h1>
-  <h1>Ready to serve as you dream</h1>
-      </div>
-   </div>
+      <h1>Supporting Hands</h1>
+      <h1>When ever you are in need</h1>
+      <h1>Ready to serve as you dream</h1>
+    </div>
+  </div>
 </section>
-
-
-

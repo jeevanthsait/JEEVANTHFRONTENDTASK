@@ -6,6 +6,7 @@ import { LoginComponent } from './login/login.component';
 import { ProductComponent } from './product/product.component';
 import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
+import { CounterComponent } from './counter/counter.component';
 
 const routes: Routes = [
   {
@@ -19,6 +20,9 @@ const routes: Routes = [
   },
   {
     path:'about',component:AboutComponent
+  },
+  {
+    path:'counter',component:CounterComponent
   }
    
 ];

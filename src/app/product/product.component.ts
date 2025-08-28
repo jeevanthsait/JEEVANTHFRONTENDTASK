@@ -1,158 +1,146 @@
 import { Component, OnInit } from '@angular/core';
 import { ServiceService } from '../Service/service.service';
-import { FormControl, FormGroup } from '@angular/forms';
-import { elementAt } from 'rxjs';
-import Swal from 'sweetalert2';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
+import Swal from 'sweetalert2';
+import { ProductDto, ProductResponse } from '../models/Productdto';
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.css']
 })
 export class ProductComponent implements OnInit {
-  storeproduct: any;
-  selectedAll: boolean = false;
-  filteredProducts: any[] = [];
+  storeproduct: ProductDto[] = [];
+  selectedAll = false;
+  filteredProducts: ProductDto[] = [];
   addproductform!: FormGroup;
   searchControl = new FormControl('');
   nameFilter = new FormControl('');
-descriptionFilter = new FormControl('');
-priceFilter = new FormControl('');
-  storepostdata: any[] = [];
-  selected: any;
-  newarray: any[] = [];
-  extraid: any;
+  descriptionFilter = new FormControl('');
+  priceFilter = new FormControl('');
+  storepostdata: ProductDto[] = [];
+  newarray: { _id: string }[] = [];
+  extraid!: string;
   selectedFiles: File[] = [];
-  storenewsingledata: any;
-  fb: any;
-  existingImages: any;
-  constructor(private service: ServiceService) {
+  storenewsingledata: ProductDto | undefined;
+  existingImages: string[] = [];
+  selectedProduct: ProductDto | null = null;
+  // private service=Inject(ServiceService)
+  constructor(
+    // eslint-disable-next-line @angular-eslint/prefer-inject
+    private service: ServiceService
+  ) {
     console.log("Yes Constructor called....!");
 
   }
   ngOnInit(): void {
     console.log("Oninit is called....!");
-    this.getproduct();
     this.addproductform = new FormGroup({
       "name": new FormControl(null),
       "description": new FormControl(null),
-      "price": new FormControl(null),
+      "price": new FormControl(null, ([Validators.required, Validators.min(0)])),
       "images": new FormControl([])
     });
-
-     this.nameFilter.valueChanges.subscribe(() => this.applyFilterAndSort());
-     this.descriptionFilter.valueChanges.subscribe(() => this.applyFilterAndSort());
-     this.priceFilter.valueChanges.subscribe(() => this.applyFilterAndSort());
+    this.getproduct();
+    this.nameFilter.valueChanges.subscribe(() => this.applyFilterAndSort());
+    this.descriptionFilter.valueChanges.subscribe(() => this.applyFilterAndSort());
+    this.priceFilter.valueChanges.subscribe(() => this.applyFilterAndSort());
   }
 
 
-  onFileSelected(event: any) {
-    const files: FileList = event.target.files;
-    this.selectedFiles = Array.from(files);
-    console.log("Selected Files:", this.selectedFiles);
-    if (this.selectedFiles.length > 5) {
-      alert('You can upload a maximum of 5 images');
-      this.selectedFiles = this.selectedFiles.slice(0, 5);
+
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const files: FileList | null = input.files;
+
+    if (files) {
+      this.selectedFiles = Array.from(files);
+      console.log("Selected Files:", this.selectedFiles);
+
+      if (this.selectedFiles.length > 5) {
+        alert('You can upload a maximum of 5 images');
+        this.selectedFiles = this.selectedFiles.slice(0, 5);
+      }
     }
   }
 
   getproduct() {
-    this.service.getproductdata().subscribe((res: any) => {
-      if (res) {
-        console.log("productdaa", res);
-        this.storeproduct = res.map((p: any) => {
+    console.log("Get product called...!");
+    this.service.getproductdata().subscribe({
+      next: (res: ProductDto[]) => {
+        console.log("Product data:", res);
+        this.storeproduct = res.map((product: ProductDto) => {
           return {
-            ...p,
-            images: p.images.map((img: string) => `http://localhost:3000/uploads/${img}`)
+            ...product,
+            images: product.images?.map((img: string) => `http://localhost:3000/uploads/${img}`) || []
           };
         });
-
-        const savedSearch = sessionStorage.getItem('productSearch');
-        // if (savedSearch) {
-        //   console.log("yes saved called when refresh");
-        //   this.searchControl.setValue(savedSearch, { emitEvent: false });
-        // }
         this.applyFilterAndSort();
+      },
+      error: (error: unknown) => {
+        console.error("Error fetching products:", error);
       }
-    })
+    });
+
   }
+
+
 
   // !-----fileterd array----!
 
 
   applyFilterAndSort() {
-  const nameText = this.nameFilter.value?.toLowerCase() || '';
-  console.log("nameflter==========?",this.nameFilter);
-  const desText = this.descriptionFilter.value?.toLowerCase() || '';
-  const priceText = this.priceFilter.value?.toString() || '';
+    const nameText = this.nameFilter.value?.toLowerCase() || '';
+    console.log("nameflter==========?", this.nameFilter);
+    const desText = this.descriptionFilter.value?.toLowerCase() || '';
+    const priceText = this.priceFilter.value?.toString() || '';
 
-  this.filteredProducts = this.storeproduct.filter((p: any) => {
-    let match = true;
+    this.filteredProducts = this.storeproduct.filter((p: ProductDto) => {
+      let match = true;
 
-    if (nameText) {
-      match = match && p.name?.toLowerCase().includes(nameText);
-    }
+      if (nameText) {
+        match = match && p.name?.toLowerCase().includes(nameText);
+      }
 
-    if (desText) {
-      match = match && p.description?.toLowerCase().includes(desText);
-    }
+      if (desText) {
+        match = match && p.description?.toLowerCase().includes(desText);
+      }
 
-    if (priceText) {
-      match = match && p.price?.toString().includes(priceText);
-    }
+      if (priceText) {
+        match = match && p.price?.toString().includes(priceText);
+      }
 
-    return match;
-  });
+      return match;
+    });
 
-  console.log("Filtered Products:", this.filteredProducts);
-}
-
-
+    console.log("Filtered Products:", this.filteredProducts);
+  }
 
 
-
-  // sendpostadd() {
-  //   console.log("newproductdata 🐼", this.addproductform.value);
-
-  //   const formData = new FormData();
-  //   formData.append("name", this.addproductform.value.name);
-  //   formData.append("description", this.addproductform.value.description);
-  //   formData.append("price", this.addproductform.value.price);
-
-  //   for (let file of this.addproductform.value.images) {
-  //     formData.append("images", file);
-  //   }
-
-  //   this.service.postproductdata(formData).subscribe((res: any) => {
-  //     console.log("Succesfully Added data..! ", res);
-  //   });
-  // }
 
   sendpostadd() {
-    console.log("newproductdata 🐼", this.addproductform.value);
-
+    console.log("newproductdata ", this.addproductform.value);
     const formData = new FormData();
     formData.append("name", this.addproductform.get('name')?.value);
     formData.append("description", this.addproductform.get('description')?.value);
     formData.append("price", this.addproductform.get('price')?.value);
 
-    // Append each selected file with the same key "images"
     for (const file of this.selectedFiles) {
       formData.append("images", file, file.name);
     }
-
-    this.service.postproductdata(formData).subscribe((res: any) => {
-      console.log("Successfully Added data..! ", res);
+    this.service.postproductdata(formData).subscribe((res: ProductResponse) => {
+      console.log("Successfully Added data..! ", res.message);
       this.getproduct();
-    }, err => {
-      console.error('Upload error', err);
     });
+
   }
+
   CheckboxChange() {
     this.newarray = [];
-    this.storeproduct.forEach((value: any) => {
+    this.storeproduct.forEach((value: ProductDto) => {
       value.selected = this.selectedAll;
-      console.log("statement:", value.selected);  // update each child
+      console.log("statement:", value.selected);
       if (this.selectedAll && value.selected) {
         console.log("false called");
         this.newarray.push({ _id: value._id });
@@ -181,87 +169,109 @@ priceFilter = new FormControl('');
             'success'
           );
         });
+        this.getproduct();
       }
     });
   }
 
 
-  change(product: any) {
+  change(product: ProductDto) {
     if (product.selected) {
-      if (!this.newarray.some((p: any) => p._id === product._id)) {
+      if (!this.newarray.some((p) => p._id === product._id)) {
         this.extraid = product._id;
         this.newarray.push({ _id: this.extraid });
       }
     } else {
 
-      this.newarray = this.newarray.filter((p: any) => p._id !== product._id);
+      this.newarray = this.newarray.filter((p) => p._id !== product._id);
     }
 
-    this.selectedAll = this.storeproduct.every((p: any) => p.selected);
+    this.selectedAll = this.storeproduct.every((p) => p.selected);
 
     console.log("Child Changed ->", this.newarray);
 
   }
-  Editdata() {
-  if (!this.extraid) return;
-  this.service.getsingledata(this.extraid).subscribe((res: any) => {
-    console.log("Successfully fetched...!", res);
-    if (res) {
-      // Patch form values
-      this.addproductform.patchValue({
-        name: res.name,
-        description: res.description,
-        price: res.price,
-      });
-      // Map existing images; prepend only if it is a filename
-      this.existingImages = res.images.map((img: string) =>
-        img.startsWith('http') ? img : `http://localhost:3000/uploads/${img}`
-      );
-    }
-  });
-}
+
+  EditData() {
+    if (!this.extraid) return;
+    console.log("Id:", this.extraid);
+
+    this.service.getsingledata(this.extraid).subscribe({
+      next: (res: ProductDto) => {
+        console.log("Single Product data:", res);
+
+
+        this.existingImages = (res.images || []).map((img: string) =>
+          img.startsWith('http') ? img : `http://localhost:3000/uploads/${img}`
+        );
+
+
+        this.addproductform.patchValue({
+          name: res.name,
+          description: res.description,
+          price: res.price
+        });
+      },
+      error: (error: unknown) => {
+        console.error("Error fetching single product:", error);
+      }
+    });
+  }
 
   r() {
     console.log("Reset called...!");
     this.addproductform.reset();
   }
 
-
   Update() {
-  if (!this.extraid) return;
+    if (!this.extraid) return;
+    // 🔹 First fetch existing product by ID (like EditData does)
+    // Now create FormData
+    const formData = new FormData();
+    formData.append("name", this.addproductform.get('name')?.value);
+    console.log("Testing",this.addproductform.value);
+    formData.append("description", this.addproductform.get('description')?.value);
+    formData.append("price", this.addproductform.get('price')?.value);
 
-  const formData = new FormData();
-  formData.append("name", this.addproductform.get("name")?.value);
-  formData.append("description", this.addproductform.get("description")?.value);
-  formData.append("price", this.addproductform.get("price")?.value);
-
-  for (const file of this.selectedFiles) {
-      formData.append("images", file, file.name);
+    // Append new files if user selected
+    if (this.selectedFiles && this.selectedFiles.length > 0) {
+      for (const file of this.selectedFiles) {
+        formData.append("images", file);
+      }
     }
 
- 
+    // Call update API
+    this.service.updatesingledata(this.extraid, formData).subscribe({
+      next: (res) => {
+        console.log("✅ Product updated:", res.product);
+        this.getproduct();
+      },
+      error: (err) => {
+        console.error("❌ Update failed:", err);
+      }
+    });
 
-  this.service.updatesingledata(this.extraid, formData).subscribe((res: any) => {
-    console.log("Updated Successfully!", res);
+    this.service.getsingledata(this.extraid).subscribe({
+      next: (res: ProductDto) => {
+        console.log("Fetched for update:", res);
+           
+        this.existingImages = (res.images || []).map((img: string) =>
+          img.startsWith('http') ? img : `http://localhost:3000/uploads/${img}`
+        );
+        // Patch form with existing data
+        this.addproductform.patchValue({
+          name: res.name || "",
+          description: res.description || "",
+          price: res.price || ""
+        });
+      },
+      error: (err) => {
+        console.error("❌ Failed to fetch product before update:", err);
+      }
+    });
+  }
 
-    if (res.product) {
-      // Patch updated form values
-      this.addproductform.patchValue({
-        name: res.product.name,
-        description: res.product.description,
-        price: res.product.price
-      });
 
-      // Update existingImages array for display
-      this.existingImages = res.product.images.map((img: string) =>
-        img.startsWith('http') ? img : `http://localhost:3000/uploads/${img}`
-      );
-
-      // Refresh the product list
-      this.getproduct();
-    }
-  });
-}
 
 
   show() {

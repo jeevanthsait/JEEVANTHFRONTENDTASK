@@ -14,6 +14,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
+import { CounterComponent } from './counter/counter.component';
 
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -26,7 +27,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     ProductComponent,
   
     HomeComponent,
-       AboutComponent
+       AboutComponent,
+       CounterComponent
   ],
   imports: [
     BrowserModule,

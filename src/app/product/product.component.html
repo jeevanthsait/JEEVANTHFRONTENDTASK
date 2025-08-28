@@ -5,10 +5,10 @@
     <button class="btn text-white bg-info fw-bold" data-bs-toggle="modal" data-bs-target="#addproduct">
       <i class="bi bi-plus"></i> Add
     </button>
-    <button class="btn text-white bg-primary fw-bold" data-bs-toggle="modal" data-bs-target="#editmodel" (click)="Editdata()">
+    <button class="btn text-white bg-primary fw-bold" data-bs-toggle="modal" data-bs-target="#editmodel" (click)="EditData()">
       <i class="bi bi-eye"></i> View
     </button>
-    <button class="btn text-white bg-warning fw-bold" data-bs-toggle="modal" data-bs-target="#updatemodel" (click)="Editdata()">
+    <button class="btn text-white bg-warning fw-bold" data-bs-toggle="modal" data-bs-target="#updatemodel" (click)="Update()">
       <i class="bi bi-pencil-square"></i> Edit
     </button>
     <button class="btn text-white bg-danger fw-bold" (click)="delete()">
@@ -17,12 +17,12 @@
   </div>
 
   <!-- Search bar -->
-  <div class="search-bar flex-grow-1 mx-3">
+  <!-- <div class="search-bar flex-grow-1 mx-3">
     <form class="d-flex" role="search" (submit)="$event.preventDefault()">
         <input class="form-control me-2" type="search" placeholder="Search" [formControl]="searchControl" />
         <button class="btn btn-outline-success" type="submit">Search</button>
     </form>
-  </div> 
+  </div>  -->
 
 
 </div>
@@ -70,7 +70,7 @@
                         <td>{{v.description}}</td>
                         <td>{{v.price}}</td>
                         <td>
-                            <img *ngFor="let img of v.images" [src]="img" width="100" height="100"
+                            <img *ngFor="let img of v.images" [src]="img" [alt]="img" width="100" height="100"
                                 style="margin:5px;" />
                         </td>
                     </tr>
@@ -92,7 +92,7 @@
                 <div style="background-color: palevioletred;padding:10px 10px;text-align: center;" class="w-100 ">
                     <h2>Add Product List</h2>
                 </div>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="r()"></button>
             </div>
             <div class="modal-body">
                 <div>
@@ -107,7 +107,7 @@
                         </div>
                         <div class="col-lg-8 mb-3">
                             <label for="price" class="mb-2 form-label fw-bold">Enter price:</label>
-                            <input type="text" name="price" id="price" formControlName="price" class="form-control">
+                            <input type="text" name="price" id="price" formControlName="price" class="form-control" >
                         </div>
                         <div class="col-lg-8 mb-3">
                             <label for="filesup" class="mb-2 form-label fw-bold">Enter File/image:</label>
@@ -160,7 +160,7 @@
 
                     <div *ngIf="existingImages">
                         <p>Existing Images:</p>
-                        <img *ngFor="let img of existingImages" [src]="img" width="100" height="100">
+                        <img *ngFor="let img of existingImages" [src]="img" [alt]="img" width="100" height="100">
                     </div>
 
                 </form>
@@ -204,9 +204,8 @@
                     </div>
                     <div *ngIf="existingImages">
                         <p>Existing Images:</p>
-                        <img *ngFor="let img of existingImages" [src]="img" width="100" height="100">
+                        <img *ngFor="let img of existingImages" [src]="img" [alt]="img" width="100" height="100">
                     </div>
-
                     
                 </form>
             </div>
