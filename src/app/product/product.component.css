@@ -1,6 +1,26 @@
-.header{
-    padding: 20px 20px ;
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px;
+  background-color: #f8f9fa; /* Light gray */
+  flex-wrap: wrap; /* Responsive wrap on smaller screens */
+  gap: 10px;
 }
+
+.button-group button {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* space between icon and text */
+}
+
+.search-bar {
+  flex: 1; /* take remaining space */
+  min-width: 200px;
+}
+
+
+
 .btn{
     margin-left: 50px;
     margin-right: 50px;
@@ -11,4 +31,25 @@ th{
 }
 td{
     padding: 10px 10px;
+}
+.header{
+padding: 20px 20px;
+}
+.section-one {
+    padding: 40px 40px;
+    
+}
+.filter-sections{
+margin:20px 40px ;
+justify-content: space-around;
+padding-top: 15px ;
+padding-bottom: 35px;
+ box-shadow: 0 0.46875rem 2.1875rem rgba(90, 97, 105, 0.1), 0 0.9375rem 1.40625rem rgba(90, 97, 105, 0.1), 0 0.25rem 0.53125rem rgba(90, 97, 105, 0.12), 0 0.125rem 0.1875rem rgba(90, 97, 105, 0.1);
+}
+#tc{
+    box-shadow: 0 0.46875rem 2.1875rem rgba(90, 97, 105, 0.1), 0 0.9375rem 1.40625rem rgba(90, 97, 105, 0.1), 0 0.25rem 0.53125rem rgba(90, 97, 105, 0.12), 0 0.125rem 0.1875rem rgba(90, 97, 105, 0.1);
+   overflow: hidden;
+}
+input{
+     box-shadow: 0 0.46875rem 2.1875rem rgba(90, 97, 105, 0.1), 0 0.9375rem 1.40625rem rgba(90, 97, 105, 0.1), 0 0.25rem 0.53125rem rgba(90, 97, 105, 0.12), 0 0.125rem 0.1875rem rgba(90, 97, 105, 0.1);
 }

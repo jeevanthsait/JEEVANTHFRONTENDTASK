@@ -6,19 +6,19 @@
         <form [formGroup]="userdata">
             <div class="col-lg-8 mx-4 mb-3 mt-4">
                 <label for="user-email" class="form-label">User Email</label>
-                <input type="text" name="user" id="user-email" class="form-control" formControlName="email">
+                <input type="email" name="user" id="user-email" class="form-control" formControlName="email">
             </div>
             <div class="col-lg-8 mx-4 mb-3 mt-4">
                 <label for="pass" class="form-label">Password </label>
                 <input type="password" name="password" id="pass" class="form-control" formControlName="password">
             </div>
             <div class="mx-4">
-                <a href="product">
+                <a href="">
                     <p>Forget password?</p>
                 </a>
             </div>
             <div class="button-division mx-4 ">
-                <button class="btn bg-info fw-bold text-center text-white" (click)="getdata()">Login</button>
+                <button class="btn bg-info fw-bold text-center text-white" (click)="getdata()"><a href="">Login</a></button>
                 <button class="btn bg-success fw-bold text-center text-white " style="margin-left: 180px;"
                     data-bs-toggle="modal" data-bs-target="#exampleModal">Register</button>
 
@@ -49,13 +49,11 @@
                     <div class="mt-3mb-3">
                         <div class="col-lg-8 mx-4 mb-3 mt-4">
                             <label for="user-name" class="form-label">User name</label>
-                            <input type="text" name="user" id="user-name" class="form-control"
-                                formControlName="name">
+                            <input type="text" name="user" id="user-name" class="form-control" formControlName="name">
                         </div>
                         <div class="col-lg-8 mx-4 mb-3 mt-4">
                             <label for="user-email" class="form-label">User Email</label>
-                            <input type="text" name="user" id="user-email" class="form-control"
-                                formControlName="email">
+                            <input type="email" name="user" id="user-email" class="form-control" formControlName="email">
                         </div>
                         <div class="col-lg-8 mx-4 mb-3 mt-4">
                             <label for="pass" class="form-label">Password </label>
@@ -63,9 +61,13 @@
                                 formControlName="password">
                         </div>
                         <div class="col-lg-8 mx-4 mb-3 mt-4">
-                            <label for="user-role" class="form-label">User Role</label>
-                            <input type="text" name="role" id="user-role" class="form-control"
-                                formControlName="role">
+                        <label for="user-role" class="form-label">User Role</label>
+                            <select class="form-select" aria-label="Default select example" formControlName="role">
+                                <option selected>Select any one</option>
+                                <option value="1">Admin</option>
+                                <option value="2">Manager</option>
+                                <option value="3">User</option>
+                            </select>
                         </div>
                     </div>
                 </form>

@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
   }
   getdata()
 {
-  console.log("Responces:",this.userdata.value);
+  console.log("I got the Responces:",this.userdata.value);
   this.storelogindata=this.userdata.value;
   this.service.postreqlogin(this.storelogindata).subscribe((res:any)=>
   {
@@ -46,8 +46,8 @@ export class LoginComponent implements OnInit {
       localStorage.setItem('authToken', token);
     }
     console.log("Succesfully Login...!",res);
-    
-    this.router.navigate(['/product']);
+     this.sendLoginEmail(this.storelogindata);
+    // this.router.navigate(['/product']);
   });
 }
 
@@ -57,10 +57,49 @@ getdatareg()
   this.storedata=this.register.value;
   this.service.postrequest(this.storedata).subscribe((res:any)=>
   {
-      console.log("Successfully Registered...!",res);
+    if(res) 
+      {
+        console.log("Successfully Registered...!",res);
+        this.Sendregistermail(this.storedata);
+         
+      }
+      
+
   })
   
 }
 
+sendLoginEmail(data: { email: string; password: string }) {
+  console.log("mail sample",data)
+  const emailData = {
+    to: data.email,
+    subject: "Login Notification...!",
+    text: `Hello! You have successfully logged in. Your password is: ${data.password}`
+  };
+  this.service.sendMail(emailData).subscribe((res)=>
+  {
+    if(res)
+    {
+      console.log("Email succefully send..!");
+      this.router.navigate(['/home']);  
+    }
+  })
+}
+Sendregistermail(storedata:{email:string})
+{
+   console.log("Register mail:",storedata);
+    const  registerdata = {
+    to: storedata.email,
+    subject: "Register  Notification...!",
+    text: `Hello! You have successfully Registered...!`
+  };
+  this.service.sendMail(registerdata).subscribe((res)=>
+  {
+    if(res)
+    {
+      console.log("Register Email succefully send..!");
+    }
+  })
 }
 
+}

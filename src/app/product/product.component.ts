@@ -12,14 +12,20 @@ import Swal from 'sweetalert2';
 export class ProductComponent implements OnInit {
   storeproduct: any;
   selectedAll: boolean = false;
-  filteredProducts: any[] = [];  
+  filteredProducts: any[] = [];
   addproductform!: FormGroup;
+  searchControl = new FormControl('');
+  nameFilter = new FormControl('');
+descriptionFilter = new FormControl('');
+priceFilter = new FormControl('');
   storepostdata: any[] = [];
   selected: any;
   newarray: any[] = [];
   extraid: any;
-  count: any
+  selectedFiles: File[] = [];
   storenewsingledata: any;
+  fb: any;
+  existingImages: any;
   constructor(private service: ServiceService) {
     console.log("Yes Constructor called....!");
 
@@ -31,15 +37,41 @@ export class ProductComponent implements OnInit {
       "name": new FormControl(null),
       "description": new FormControl(null),
       "price": new FormControl(null),
-      "images": new FormControl(null),
+      "images": new FormControl([])
     });
+
+     this.nameFilter.valueChanges.subscribe(() => this.applyFilterAndSort());
+     this.descriptionFilter.valueChanges.subscribe(() => this.applyFilterAndSort());
+     this.priceFilter.valueChanges.subscribe(() => this.applyFilterAndSort());
+  }
+
+
+  onFileSelected(event: any) {
+    const files: FileList = event.target.files;
+    this.selectedFiles = Array.from(files);
+    console.log("Selected Files:", this.selectedFiles);
+    if (this.selectedFiles.length > 5) {
+      alert('You can upload a maximum of 5 images');
+      this.selectedFiles = this.selectedFiles.slice(0, 5);
+    }
   }
 
   getproduct() {
     this.service.getproductdata().subscribe((res: any) => {
       if (res) {
         console.log("productdaa", res);
-        this.storeproduct = res;
+        this.storeproduct = res.map((p: any) => {
+          return {
+            ...p,
+            images: p.images.map((img: string) => `http://localhost:3000/uploads/${img}`)
+          };
+        });
+
+        const savedSearch = sessionStorage.getItem('productSearch');
+        // if (savedSearch) {
+        //   console.log("yes saved called when refresh");
+        //   this.searchControl.setValue(savedSearch, { emitEvent: false });
+        // }
         this.applyFilterAndSort();
       }
     })
@@ -48,29 +80,51 @@ export class ProductComponent implements OnInit {
   // !-----fileterd array----!
 
 
-  applyFilterAndSort() 
-  {
-    // 1️⃣ Filter example: price > 150
-    
-    this.filteredProducts = this.storeproduct.filter((p: any) => p.price > 100)
-      //  console.log("Filtered array length:", this.filteredProducts.length);
-      //  console.log("Filterd by price:😎",this.filteredProducts);
-    // 2️⃣ Sort ascending by price
-       this.filteredProducts.sort((a, b) => a.price - b.price);
+  applyFilterAndSort() {
+  const nameText = this.nameFilter.value?.toLowerCase() || '';
+  console.log("nameflter==========?",this.nameFilter);
+  const desText = this.descriptionFilter.value?.toLowerCase() || '';
+  const priceText = this.priceFilter.value?.toString() || '';
 
-    // 3️⃣ Save filtered & sorted data to session storage
-    sessionStorage.setItem('filteredProductIds', JSON.stringify(this.filteredProducts));
+  this.filteredProducts = this.storeproduct.filter((p: any) => {
+    let match = true;
 
-    console.log("Filtered & Sorted Products:", this.filteredProducts);
-  }
+    if (nameText) {
+      match = match && p.name?.toLowerCase().includes(nameText);
+    }
 
-  // sendpostadd()
-  // {
-  //   console.log("newproductdata:🐼",this.addproductform.value);
-  //   this.storepostdata=this.addproductform.value;
-  //   this.service.postproductdata(this.storepostdata).subscribe((res:any)=>
-  //   {
-  //     console.log("Succesfully Added data..!🤞",res);
+    if (desText) {
+      match = match && p.description?.toLowerCase().includes(desText);
+    }
+
+    if (priceText) {
+      match = match && p.price?.toString().includes(priceText);
+    }
+
+    return match;
+  });
+
+  console.log("Filtered Products:", this.filteredProducts);
+}
+
+
+
+
+
+  // sendpostadd() {
+  //   console.log("newproductdata 🐼", this.addproductform.value);
+
+  //   const formData = new FormData();
+  //   formData.append("name", this.addproductform.value.name);
+  //   formData.append("description", this.addproductform.value.description);
+  //   formData.append("price", this.addproductform.value.price);
+
+  //   for (let file of this.addproductform.value.images) {
+  //     formData.append("images", file);
+  //   }
+
+  //   this.service.postproductdata(formData).subscribe((res: any) => {
+  //     console.log("Succesfully Added data..! ", res);
   //   });
   // }
 
@@ -78,17 +132,20 @@ export class ProductComponent implements OnInit {
     console.log("newproductdata 🐼", this.addproductform.value);
 
     const formData = new FormData();
-    formData.append("name", this.addproductform.value.name);
-    formData.append("description", this.addproductform.value.description);
-    formData.append("price", this.addproductform.value.price);
+    formData.append("name", this.addproductform.get('name')?.value);
+    formData.append("description", this.addproductform.get('description')?.value);
+    formData.append("price", this.addproductform.get('price')?.value);
 
-    // If you allow multiple images
-    for (let file of this.addproductform.value.images) {
-      formData.append("images", file);
+    // Append each selected file with the same key "images"
+    for (const file of this.selectedFiles) {
+      formData.append("images", file, file.name);
     }
 
     this.service.postproductdata(formData).subscribe((res: any) => {
-      console.log("Succesfully Added data..! 🤞", res);
+      console.log("Successfully Added data..! ", res);
+      this.getproduct();
+    }, err => {
+      console.error('Upload error', err);
     });
   }
   CheckboxChange() {
@@ -131,64 +188,87 @@ export class ProductComponent implements OnInit {
 
   change(product: any) {
     if (product.selected) {
-      // add if not already there
       if (!this.newarray.some((p: any) => p._id === product._id)) {
-        this.extraid = product._id;   // ✅ correct assignment
+        this.extraid = product._id;
         this.newarray.push({ _id: this.extraid });
       }
     } else {
-      // remove if unchecked
+
       this.newarray = this.newarray.filter((p: any) => p._id !== product._id);
     }
-    // if any one is unchecked, turn off SelectAll
+
     this.selectedAll = this.storeproduct.every((p: any) => p.selected);
 
     console.log("Child Changed ->", this.newarray);
 
   }
   Editdata() {
-    console.log("Extra id:", this.extraid);
-    this.service.getsingledata(this.extraid).subscribe((res: any) => {
-      console.log("Successfully fetched...!", res);
-      if (res) {
-        this.addproductform.patchValue({
-          "name": res.name,
-          "description": res.description,
-          "price": res.price,
-          "images": res.images,
-        })
-      }
-    })
-  }
+  if (!this.extraid) return;
+  this.service.getsingledata(this.extraid).subscribe((res: any) => {
+    console.log("Successfully fetched...!", res);
+    if (res) {
+      // Patch form values
+      this.addproductform.patchValue({
+        name: res.name,
+        description: res.description,
+        price: res.price,
+      });
+      // Map existing images; prepend only if it is a filename
+      this.existingImages = res.images.map((img: string) =>
+        img.startsWith('http') ? img : `http://localhost:3000/uploads/${img}`
+      );
+    }
+  });
+}
+
   r() {
     console.log("Reset called...!");
     this.addproductform.reset();
   }
-  
+
 
   Update() {
-  console.log("Extra id:", this.extraid);
+  if (!this.extraid) return;
+
   const formData = new FormData();
   formData.append("name", this.addproductform.get("name")?.value);
   formData.append("description", this.addproductform.get("description")?.value);
   formData.append("price", this.addproductform.get("price")?.value);
 
- 
-  const fileInput = (document.getElementById("filesup") as HTMLInputElement);
-  if (fileInput.files && fileInput.files.length > 0) {
-    formData.append("images", fileInput.files[0]);
-  }
+  for (const file of this.selectedFiles) {
+      formData.append("images", file, file.name);
+    }
 
-  this.service.updatesingledata(this.extraid, formData).subscribe((res:any) => {
+ 
+
+  this.service.updatesingledata(this.extraid, formData).subscribe((res: any) => {
     console.log("Updated Successfully!", res);
+
+    if (res.product) {
+      // Patch updated form values
+      this.addproductform.patchValue({
+        name: res.product.name,
+        description: res.product.description,
+        price: res.product.price
+      });
+
+      // Update existingImages array for display
+      this.existingImages = res.product.images.map((img: string) =>
+        img.startsWith('http') ? img : `http://localhost:3000/uploads/${img}`
+      );
+
+      // Refresh the product list
+      this.getproduct();
+    }
   });
 }
-show()
-{
-  const savedIds = JSON.parse(sessionStorage.getItem('filteredProductIds') || '[]');
 
-   console.log("REsponces From sessiong storage",savedIds); 
-}
+
+  show() {
+    const savedIds = JSON.parse(sessionStorage.getItem('filteredProductIds') || '[]');
+
+    console.log("REsponces From sessiong storage", savedIds);
+  }
 }
 
 

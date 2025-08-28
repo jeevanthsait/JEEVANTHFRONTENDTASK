@@ -16,6 +16,9 @@
       {
         "empty-table-header": "off"
       }
-    ]
+    ],
+    "axe/keyboard": "off",
+    "axe/text-alternatives": "off",
+    "axe/structure": "off"
   }
 }
